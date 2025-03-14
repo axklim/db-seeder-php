@@ -1,0 +1,16 @@
+{
+    "name": "ax.klim/db-fixture-generator",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "AxKlim\\DbFixtureGenerator\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Aleksey Klimov",
+            "email": "ax.klim@gmail.com"
+        }
+    ],
+    "require": {}
+}
