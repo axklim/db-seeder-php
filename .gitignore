@@ -1,2 +1,9 @@
 /vendor/
 composer.lock
+.env
+.phpunit.cache
+/tools/.phpunit.result.cache
+.env.test.local
+
+/generated/
+!generated/.gitkeep

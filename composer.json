@@ -1,9 +1,15 @@
 {
-    "name": "ax.klim/db-fixture-generator",
+    "name": "axklim/db-seeder-php",
     "type": "library",
     "autoload": {
         "psr-4": {
-            "AxKlim\\DbFixtureGenerator\\": "src/"
+            "SeederGenerator\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SeederGenerator\\Test\\": "tests/",
+            "DbSeeder\\": "generated/"
         }
     },
     "authors": [
@@ -12,5 +18,15 @@
             "email": "ax.klim@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php": "^8.1",
+        "ext-mysqli": "*",
+        "ext-pdo": "*",
+        "icanboogie/inflector": "^2",
+        "nette/php-generator": "^4.1",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "config": {
+        "sort-packages": true
+    }
 }
