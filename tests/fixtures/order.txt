@@ -86,7 +86,7 @@ class Order implements \SeederGenerator\Fixture
 		?string $intent = null,
 	): self
 	{
-		$valueResolver = new \SeederGenerator\ValueResolver(self::meta());
+		$valueResolver = new \SeederGenerator\ValueResolver(self::meta(), '/path/to/seeder.config.php');
 
 		if (null === $merchantDebtorId) {
 		    $merchantDebtorId = MerchantsDebtor::make();

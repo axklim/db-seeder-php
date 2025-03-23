@@ -37,7 +37,7 @@ class Generator
     /**
      * @param string[] $tables
      */
-    public function generate(array $tables, string $seederPath, string $seederNamespace): void
+    public function generate(array $tables, string $seederPath, string $seederNamespace, string $configFilePath = ''): void
     {
         if ($tables === ['*']) {
             $tables = $this->connection->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN);
@@ -47,12 +47,12 @@ class Generator
 
         foreach ($tables as $tableName) {
             $table = $this->fetchTableDescription($tableName, $databaseName);
-            $fixtureClass = $this->generateFixtureClass($seederNamespace, $table);
+            $fixtureClass = $this->generateFixtureClass($seederNamespace, $table, $configFilePath);
             $this->saveFixtureClass($seederPath, $table->className() . '.php', $fixtureClass);
         }
     }
 
-    public function generateFixtureClass(string $namespaceName, Table $table): PhpFile
+    public function generateFixtureClass(string $namespaceName, Table $table, string $configFilePath): PhpFile
     {
         $columns = $table->columns();
 
@@ -70,7 +70,7 @@ class Generator
             ->addImplement(Fixture::class)
             ->setMethods([
                 $this->generateConstructor($columns),
-                $this->generateMakeMethod($columns, $namespaceName),
+                $this->generateMakeMethod($columns, $namespaceName, $configFilePath),
                 ...$this->generateDependencyMethods($columns),
                 $this->generateTableNameMethod($table->name()),
                 $this->generateFieldsMethod($columns),
@@ -116,7 +116,7 @@ class Generator
     /**
      * @param Column[] $columns
      */
-    protected function generateMakeMethod(array $columns, string $namespaceName): Method
+    protected function generateMakeMethod(array $columns, string $namespaceName, string $configFilePath): Method
     {
         $parameters = array_map(
             static function(Column $column) use ($namespaceName): Parameter {
@@ -137,17 +137,17 @@ class Generator
             ->setPublic()
             ->setReturnType('self')
             ->setParameters($parameters)
-            ->addBody($this->generateMakeBody($columns))
+            ->addBody($this->generateMakeBody($columns, $configFilePath))
         ;
     }
 
     /**
      * @param Column[] $columns
      */
-    protected function generateMakeBody(array $columns): string
+    protected function generateMakeBody(array $columns, string $configFilePath): string
     {
         $body = <<<CODE
-        \$valueResolver = new \SeederGenerator\ValueResolver(self::meta());
+        \$valueResolver = new \SeederGenerator\ValueResolver(self::meta(), '$configFilePath');
         
         
         CODE;

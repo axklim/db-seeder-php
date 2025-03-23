@@ -23,7 +23,7 @@ class GeneratorTest extends TestCase
 
 
         $table = $generator->fetchTableDescription('orders', $_ENV['DATABASE_NAME']);
-        $generatedFile = $generator->generateFixtureClass('DbSeeder', $table);
+        $generatedFile = $generator->generateFixtureClass('DbSeeder', $table, '/path/to/seeder.config.php');
         $rawFile = (new Printer())->printFile($generatedFile);
 
         $this->assertSame($this->expectedRawFile(), $rawFile);
