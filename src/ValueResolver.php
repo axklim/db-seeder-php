@@ -64,6 +64,10 @@ class ValueResolver
             return '0.0';
         }
 
+        if ('json' === $column->dbType()) {
+            return [];
+        }
+
         if ('\DateTimeImmutable' === $column->phpType()) {
             return new \DateTimeImmutable();
         }

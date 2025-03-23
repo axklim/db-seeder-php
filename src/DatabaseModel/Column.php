@@ -41,7 +41,7 @@ class Column
         $type = $this->dbType;
 
         return match (true) {
-            in_array($type, ['int', 'smallint'], true) => 'int',
+            in_array($type, ['int', 'smallint', 'int unsigned', 'smallint unsigned'], true) => 'int',
             str_starts_with($type, 'tinyint') => 'int',
             str_starts_with($type, 'varchar') => 'string',
             str_starts_with($type, 'char') => 'string',

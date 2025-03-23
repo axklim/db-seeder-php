@@ -74,7 +74,8 @@ class FixtureManager
         $this->insertLog = array_reverse($this->insertLog);
 
         foreach ($this->insertLog as $key => $log) {
-            $this->connection->exec('DELETE FROM ' . $log[0] . ' WHERE id = ' . $log[1]);
+            $stmt = $this->connection->prepare('DELETE FROM ' . $log[0] . ' WHERE id = :id');
+            $stmt->execute(['id' => $log[1]]);
             unset($this->insertLog[$key]);
         }
     }
