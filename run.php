@@ -13,4 +13,4 @@ Dotenv\Dotenv::createImmutable(__DIR__)->load();
     $_ENV['DATABASE_NAME'],
     $_ENV['DATABASE_USERNAME'],
     $_ENV['DATABASE_PASSWORD']
-))->generateAndSaveFixtures(['*'], __DIR__ . '/generated/seeds', 'DbSeeder');
+))->generate(['*'], __DIR__ . '/generated/seeds', 'DbSeeder');

@@ -37,7 +37,7 @@ class Generator
     /**
      * @param string[] $tables
      */
-    public function generateAndSaveFixtures(array $tables, string $seederPath, string $seederNamespace): void
+    public function generate(array $tables, string $seederPath, string $seederNamespace): void
     {
         if ($tables === ['*']) {
             $tables = $this->connection->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN);
@@ -88,7 +88,7 @@ class Generator
         return $file;
     }
 
-    public function saveFixtureClass(string $fixturePath, string $fileName, PhpFile $generatedClass): void
+    protected function saveFixtureClass(string $fixturePath, string $fileName, PhpFile $generatedClass): void
     {
         if (!is_dir($fixturePath) && !mkdir($fixturePath, recursive: true) && !is_dir($fixturePath)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $fixturePath));
@@ -97,7 +97,7 @@ class Generator
         file_put_contents(sprintf('%s/%s', $fixturePath, $fileName), (new Printer())->printFile($generatedClass));
     }
 
-    public function generateConstructor(array $columns): Method
+    protected function generateConstructor(array $columns): Method
     {
         $parameters = array_map(
             static fn(Column $column) => (new PromotedParameter($column->propertyName()))
@@ -116,7 +116,7 @@ class Generator
     /**
      * @param Column[] $columns
      */
-    public function generateMakeMethod(array $columns, string $namespaceName): Method
+    protected function generateMakeMethod(array $columns, string $namespaceName): Method
     {
         $parameters = array_map(
             static function(Column $column) use ($namespaceName): Parameter {
@@ -144,7 +144,7 @@ class Generator
     /**
      * @param Column[] $columns
      */
-    public function generateMakeBody(array $columns): string
+    protected function generateMakeBody(array $columns): string
     {
         $body = <<<CODE
         \$valueResolver = new \SeederGenerator\ValueResolver(self::meta());
@@ -171,7 +171,7 @@ class Generator
      * @param Column[] $columns
      * @return Method[]
      */
-    public function generateDependencyMethods(array $columns): array
+    protected function generateDependencyMethods(array $columns): array
     {
         $parameter = (new Parameter('fixture'))
             ->setType(Fixture::class);
@@ -199,7 +199,7 @@ class Generator
     /**
      * @param Column[] $columns
      */
-    public function generateMakeBodyCreateDefaultFixture(array $columns): string
+    protected function generateMakeBodyCreateDefaultFixture(array $columns): string
     {
         $columns = array_filter($columns, static fn(Column $column) => $column->dbForeignKey() !== null);
         $body = '';
@@ -220,7 +220,7 @@ class Generator
     /**
      * @param Column[] $columns
      */
-    public function generateMakeBodyApplyFixture(array $columns): string
+    protected function generateMakeBodyApplyFixture(array $columns): string
     {
         $columns = array_filter($columns, static fn(Column $column) => $column->dbForeignKey() !== null);
         $body = '';
@@ -238,7 +238,7 @@ class Generator
         return $body;
     }
 
-    public function generateTableNameMethod(string $tableName): Method
+    protected function generateTableNameMethod(string $tableName): Method
     {
         return (new Method('tableName'))
             ->setPublic()
@@ -251,7 +251,7 @@ class Generator
     /**
      * @param Column[] $columns
      */
-    public function generateFieldsMethod(array $columns): Method
+    protected function generateFieldsMethod(array $columns): Method
     {
         $fields = '[' . implode(', ', array_map(fn(Column $column) => '\'' . $column->dbField() . '\'', $columns)) . ']';
 
@@ -266,7 +266,7 @@ class Generator
     /**
      * @param Column[] $columns
      */
-    public function generateValuesMethod(array $columns): Method
+    protected function generateValuesMethod(array $columns): Method
     {
         $fields = '[' . implode(', ', array_map(fn(Column $column) => sprintf('\'%s\' => $toString($this->%s)', $column->dbField(), $column->propertyName()), $columns)) . ']';
 
@@ -280,7 +280,7 @@ class Generator
             CODE);
     }
 
-    public function generateMetaMethod(Table $table): Method
+    protected function generateMetaMethod(Table $table): Method
     {
         $body = '';
         foreach ($table->columns() as $column) {
@@ -311,12 +311,12 @@ class Generator
      * @param Column[] $columns
      * @return Method[]
      */
-    public function generateGetters(array $columns): array
+    protected function generateGetters(array $columns): array
     {
         return array_map(fn(Column $column) => $this->generateGetter($column), $columns);
     }
 
-    public function generateGetter(Column $column): Method
+    protected function generateGetter(Column $column): Method
     {
         $name = $column->propertyName();
 
@@ -330,7 +330,7 @@ class Generator
         ;
     }
 
-    public function setConnection(array $args): void
+    protected function setConnection(array $args): void
     {
         $this->connection = new PDO(sprintf('mysql:host=%s;port=%s;dbname=%s;user=%s;password=%s', $args['db_host'], $args['db_port'], $args['db_name'], $args['db_user'], $args['db_pass']));
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -377,7 +377,7 @@ class Generator
     /**
      * @return array<string, string>
      */
-    public function getReferenced(string $tableName, string $databaseName): array
+    protected function getReferenced(string $tableName, string $databaseName): array
     {
         /**
          * [

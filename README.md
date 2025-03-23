@@ -1,3 +1,7 @@
+```php
+(new Generator('host', 'port', 'name', 'username', 'password'))
+    ->generate(['*'], __DIR__ . '/generated/seeds', 'DbSeeder');
+```
 
 ### Run tests:
 
