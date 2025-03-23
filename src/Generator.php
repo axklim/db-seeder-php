@@ -15,41 +15,40 @@ use Nette\PhpGenerator\PromotedParameter;
 use PDO;
 
 //TODO: move all generate* methods to a separate builder
-class Main
+class Generator
 {
     private PDO $connection;
 
-    public function main(string $dbHost, int $dbPort, string $dbName, string $dbUser, string $dbPass, string $seederPath): void
+    private string $dbName;
+
+    public function __construct(string $dbHost, string $dbPort, string $dbName, string $dbUser, string $dbPass)
     {
         $this->setConnection([
             'db_host' => $dbHost,
-            'db_port' => $dbPort,
+            'db_port' => (int) $dbPort,
             'db_name' => $dbName,
             'db_user' => $dbUser,
             'db_pass' => $dbPass,
         ]);
 
-        $this->generateAndSaveFixtures(
-            ['*'],
-            'DbSeeder',
-            $seederPath,
-            $dbName,
-        );
+        $this->dbName = $dbName;
     }
 
     /**
      * @param string[] $tables
      */
-    public function generateAndSaveFixtures(array $tables, string $nameSpace, string $path, string $databaseName): void
+    public function generateAndSaveFixtures(array $tables, string $seederPath, string $seederNamespace): void
     {
         if ($tables === ['*']) {
             $tables = $this->connection->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN);
         }
 
+        $databaseName = $this->dbName;
+
         foreach ($tables as $tableName) {
             $table = $this->fetchTableDescription($tableName, $databaseName);
-            $fixtureClass = $this->generateFixtureClass($nameSpace, $table);
-            $this->saveFixtureClass($path, $table->className() . '.php', $fixtureClass);
+            $fixtureClass = $this->generateFixtureClass($seederNamespace, $table);
+            $this->saveFixtureClass($seederPath, $table->className() . '.php', $fixtureClass);
         }
     }
 
