@@ -1,6 +1,25 @@
+```bash
+composer require --dev axklim/db-seeder-php
+```
+
+composer.json:
+```json
+    "autoload-dev": {
+        "psr-4": {
+            "DbSeeder\\": "var/generated/",
+            ...
+        },
+```
+
 ```php
-(new Generator('host', 'port', 'name', 'username', 'password'))
-    ->generate(['*'], __DIR__ . '/generated/seeds', 'DbSeeder');
+(new SeederGenerator\Generator('host', 'port', 'name', 'username', 'password'))
+    ->generate(['*'], __DIR__ . '/var/generated/', 'DbSeeder');
+
+$fixtureManager = new SeederGenerator\FixtureManager('host', 'port', 'name', 'username', 'password');
+
+$order = DbSeeder\Order::make();
+
+$fixtureManager->save($order);
 ```
 
 ### Run tests:
