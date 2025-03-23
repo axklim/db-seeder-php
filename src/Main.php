@@ -19,16 +19,21 @@ class Main
 {
     private PDO $connection;
 
-    /** @param string[] $args */
-    public function main(array $args): void
+    public function main(string $dbHost, int $dbPort, string $dbName, string $dbUser, string $dbPass, string $seederPath): void
     {
-        $this->setConnection($args);
+        $this->setConnection([
+            'db_host' => $dbHost,
+            'db_port' => $dbPort,
+            'db_name' => $dbName,
+            'db_user' => $dbUser,
+            'db_pass' => $dbPass,
+        ]);
 
         $this->generateAndSaveFixtures(
             ['*'],
-            'DbSeeder\Fixture',
-            $args['application_root'] . '/generated/Fixture',
-            $args['db_name'],
+            'DbSeeder',
+            $seederPath,
+            $dbName,
         );
     }
 

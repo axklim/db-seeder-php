@@ -24,7 +24,7 @@ class MainTest extends TestCase
 
 
         $table = $main->fetchTableDescription('orders', $_ENV['DATABASE_NAME']);
-        $generatedFile = $main->generateFixtureClass('DbSeeder\Fixture', $table);
+        $generatedFile = $main->generateFixtureClass('DbSeeder', $table);
         $rawFile = (new Printer())->printFile($generatedFile);
 
         $this->assertSame($this->expectedRawFile(), $rawFile);

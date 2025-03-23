@@ -1,9 +1,16 @@
 
-Run tests:
+### Run tests:
 
 ```bash
 ./run.php # generate fixtures files
 ./tools/phpunit.phar
+```
+
+### Deploy
+
+```shell
+git tag v0.0.N
+git push origin v0.0.N
 ```
 
 License

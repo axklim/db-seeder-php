@@ -1,6 +1,7 @@
 {
     "name": "axklim/db-seeder-php",
     "type": "library",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "SeederGenerator\\": "src/"
@@ -9,7 +10,7 @@
     "autoload-dev": {
         "psr-4": {
             "SeederGenerator\\Test\\": "tests/",
-            "DbSeeder\\": "generated/"
+            "DbSeeder\\": "generated/seeds"
         }
     },
     "authors": [

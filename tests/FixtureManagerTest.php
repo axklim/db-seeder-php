@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SeederGenerator\Test;
 
-use DbSeeder\Fixture\Address;
-use DbSeeder\Fixture\Order;
+use DbSeeder\Address;
+use DbSeeder\Order;
 use SeederGenerator\FixtureManager;
 use PDO;
 use PHPUnit\Framework\TestCase;
@@ -28,7 +28,13 @@ class FixtureManagerTest extends TestCase
             $_ENV['DATABASE_PASSWORD'],
         ));
 
-        $this->fixtureManager = new FixtureManager($this->connection);
+        $this->fixtureManager = new FixtureManager(
+            $_ENV['DATABASE_HOST'],
+            $_ENV['DATABASE_PORT'],
+            $_ENV['DATABASE_NAME'],
+            $_ENV['DATABASE_USERNAME'],
+            $_ENV['DATABASE_PASSWORD'],
+        );
     }
 
     public function tearDown(): void

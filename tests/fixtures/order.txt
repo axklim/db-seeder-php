@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace DbSeeder\Fixture;
+namespace DbSeeder;
 
 class Order implements \SeederGenerator\Fixture
 {

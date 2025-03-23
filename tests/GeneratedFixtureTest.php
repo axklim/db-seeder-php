@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SeederGenerator\Test;
 
-use DbSeeder\Fixture\Address;
-use DbSeeder\Fixture\Order;
+use DbSeeder\Address;
+use DbSeeder\Order;
 use PHPUnit\Framework\TestCase;
 
 class GeneratedFixtureTest extends TestCase

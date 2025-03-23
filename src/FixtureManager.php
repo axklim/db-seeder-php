@@ -4,13 +4,24 @@ declare(strict_types=1);
 
 namespace SeederGenerator;
 
+use PDO;
+
 class FixtureManager
 {
     public array $insertLog = [];
 
+    private PDO $connection;
+
     public function __construct(
-        private readonly \PDO $connection,
+        string $dbHost, string $dbPort, string $dbName, string $dbUser, string $dbPass
     ) {
+        $this->setConnection([
+            'db_host' => $dbHost,
+            'db_port' => $dbPort,
+            'db_name' => $dbName,
+            'db_user' => $dbUser,
+            'db_pass' => $dbPass,
+        ]);
     }
 
     public function save(Fixture $fixture): void
@@ -66,5 +77,11 @@ class FixtureManager
             $this->connection->exec('DELETE FROM ' . $log[0] . ' WHERE id = ' . $log[1]);
             unset($this->insertLog[$key]);
         }
+    }
+
+    public function setConnection(array $args): void
+    {
+        $this->connection = new PDO(sprintf('mysql:host=%s;port=%s;dbname=%s;user=%s;password=%s', $args['db_host'], $args['db_port'], $args['db_name'], $args['db_user'], $args['db_pass']));
+        $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 }
