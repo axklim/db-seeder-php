@@ -69,7 +69,7 @@ class ValueResolver
         }
 
         //TODO: remove and fix tests!!!!
-        if ('yes' === $_ENV['BD_SEEDER_TEST_RUN']) {
+        if (isset($_ENV['BD_SEEDER_TEST_RUN']) && 'yes' === $_ENV['BD_SEEDER_TEST_RUN']) {
             if ('settings' === $column->dbField()) {
                 return [];
             }
