@@ -147,7 +147,7 @@ class Generator
     protected function generateMakeBody(array $columns, string $configFilePath): string
     {
         $body = <<<CODE
-        \$valueResolver = new \SeederGenerator\ValueResolver(self::meta(), '$configFilePath');
+        \$valueResolver = new \SeederGenerator\ValueResolver(self::meta(), __DIR__ . '/$configFilePath');
         
         
         CODE;
