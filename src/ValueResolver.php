@@ -42,6 +42,10 @@ class ValueResolver
             return null;
         }
 
+        if (!file_exists($this->config['increment_state_file'])) {
+            return null;
+        }
+
         $counter = file_get_contents($this->config['increment_state_file']);
 
         if (false === $counter) {
