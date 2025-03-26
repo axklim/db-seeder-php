@@ -7,3 +7,4 @@ composer.lock
 
 /generated/
 !generated/.gitkeep
+seeder.state.tmp

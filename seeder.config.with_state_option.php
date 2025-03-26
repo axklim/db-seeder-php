@@ -9,4 +9,5 @@ return [
             'street' => 'Baker Street',
         ],
     ],
+    'increment_state_file' => __DIR__ . '/seeder.state.tmp',
 ];

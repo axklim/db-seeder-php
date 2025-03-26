@@ -15,12 +15,49 @@ class ValueResolver
 
     public static function increment(): int
     {
-        return ++self::$globalIncrement;
+        return ++static::$globalIncrement;
     }
 
     public function __construct(private readonly Table $table, string $configFilePath)
     {
         $this->config = require($configFilePath);
+
+        static::$globalIncrement = $this->getLastState();
+    }
+
+    public function getLastState(): int
+    {
+        $value = $this->getSoredCounter();
+
+        if (null === $value) {
+            return static::$globalIncrement;
+        }
+
+        return $value;
+    }
+
+    public function getSoredCounter(): ?int
+    {
+        if (empty($this->config['increment_state_file']) || !is_string($this->config['increment_state_file'])) {
+            return null;
+        }
+
+        $counter = file_get_contents($this->config['increment_state_file']);
+
+        if (false === $counter) {
+            $counter = static::$globalIncrement;
+        }
+
+        return (int) $counter;
+    }
+
+    public function saveCounterIfEnabled(int $counter): void
+    {
+        if (empty($this->config['increment_state_file']) || !is_string($this->config['increment_state_file'])) {
+            return;
+        }
+
+        file_put_contents($this->config['increment_state_file'], $counter);
     }
 
     public function resolve(mixed $value, string $fieldName): mixed
@@ -40,7 +77,9 @@ class ValueResolver
         }
 
         if ($column->isAutoIncrement()) {
-            return self::increment();
+            $counter = self::increment();
+            $this->saveCounterIfEnabled($counter);
+            return $counter;
         }
 
         if ('CURRENT_TIMESTAMP' === $column->dbDefault() && '\DateTimeImmutable' === $column->phpType()) {
